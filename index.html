@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App Çat</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background-color: #f0f2f5; text-align: center; padding: 20px; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        button { background-color: #0088cc; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Salam, <span id="user-name">İstifadəçi</span>!</h1>
+        <p>Bu sənin ilk Mini App-ındır.</p>
+        <button id="send-btn">Mesaj Yaz</button>
+    </div>
+
+    <script>
+        let tg = window.Telegram.WebApp; // Telegram obyekti
+        tg.expand(); // Saytı tam ekran açır
+
+        // İstifadəçinin adını Telegramdan götürüb ekrana yazırıq
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById("user-name").innerText = tg.initDataUnsafe.user.first_name;
+        }
+
+        document.getElementById("send-btn").addEventListener("click", () => {
+            alert("Database hələ hazır deyil, növbəti addımda qoşacağıq!");
+        });
+    </script>
+</body>
+</html>
+  
