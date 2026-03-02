@@ -1,36 +1,70 @@
 <!DOCTYPE html>
-<html lang="az">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini App Çat</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background-color: #f0f2f5; text-align: center; padding: 20px; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        button { background-color: #0088cc; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-size: 16px; }
+        body { font-family: sans-serif; margin: 0; background: #efe7dd; display: flex; flex-direction: column; height: 100vh; }
+        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
+        .msg { background: white; padding: 8px 12px; border-radius: 12px; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative; }
+        .my-msg { align-self: flex-end; background: #dcf8c6; }
+        .user-name { font-size: 0.8em; color: #075e54; font-weight: bold; margin-bottom: 2px; }
+        .input-box { background: white; padding: 10px; display: flex; gap: 8px; border-top: 1px solid #ddd; }
+        input { flex: 1; border: 1px solid #ccc; border-radius: 20px; padding: 10px 15px; outline: none; }
+        button { background: #0088cc; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h1>Salam, <span id="user-name">İstifadəçi</span>!</h1>
-        <p>Bu sənin ilk Mini App-ındır.</p>
-        <button id="send-btn">Mesaj Yaz</button>
+
+    <div id="chat-container"></div>
+
+    <div class="input-box">
+        <input type="text" id="m-input" placeholder="Mesaj yazın...">
+        <button onclick="send()">Gönder</button>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp; // Telegram obyekti
-        tg.expand(); // Saytı tam ekran açır
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        const api = "https://chat-backend-7i5d.onrender.com";
+        const user = tg.initDataUnsafe.user || { id: 123, first_name: "Test" };
 
-        // İstifadəçinin adını Telegramdan götürüb ekrana yazırıq
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById("user-name").innerText = tg.initDataUnsafe.user.first_name;
+        // Girişdə istifadəçini bazaya qeyd et
+        fetch(`${api}/api/login`, {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ userId: user.id, userName: user.first_name })
+        });
+
+        async function load() {
+            const r = await fetch(`${api}/api/messages`);
+            const msgs = await r.json();
+            const cont = document.getElementById('chat-container');
+            cont.innerHTML = msgs.map(m => `
+                <div class="msg ${m.userId === user.id ? 'my-msg' : ''}">
+                    <div class="user-name">${m.userName}</div>
+                    <div>${m.text}</div>
+                </div>
+            `).join('');
+            cont.scrollTop = cont.scrollHeight;
         }
 
-        document.getElementById("send-btn").addEventListener("click", () => {
-            alert("Database hələ hazır deyil, növbəti addımda qoşacağıq!");
-        });
+        async function send() {
+            const input = document.getElementById('m-input');
+            if(!input.value) return;
+            await fetch(`${api}/api/send`, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ userId: user.id, userName: user.first_name, text: input.value })
+            });
+            input.value = '';
+            load();
+        }
+
+        setInterval(load, 2000);
+        load();
     </script>
 </body>
 </html>
-  
