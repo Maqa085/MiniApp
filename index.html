@@ -1,70 +1,155 @@
 <!DOCTYPE html>
-<html>
+<html lang="az">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Canım Anama Sürpriz</title>
     <style>
-        body { font-family: sans-serif; margin: 0; background: #efe7dd; display: flex; flex-direction: column; height: 100vh; }
-        #chat-container { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; }
-        .msg { background: white; padding: 8px 12px; border-radius: 12px; max-width: 80%; box-shadow: 0 1px 2px rgba(0,0,0,0.1); position: relative; }
-        .my-msg { align-self: flex-end; background: #dcf8c6; }
-        .user-name { font-size: 0.8em; color: #075e54; font-weight: bold; margin-bottom: 2px; }
-        .input-box { background: white; padding: 10px; display: flex; gap: 8px; border-top: 1px solid #ddd; }
-        input { flex: 1; border: 1px solid #ccc; border-radius: 20px; padding: 10px 15px; outline: none; }
-        button { background: #0088cc; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-weight: bold; }
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap');
+
+        body {
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle, #fff5f5 0%, #ffd1d1 100%);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            perspective: 1000px;
+        }
+
+        /* Sehrli Hədiyyə Qutusu */
+        .box-container {
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.5s;
+            z-index: 100;
+        }
+
+        .box-container:hover {
+            transform: scale(1.05);
+        }
+
+        .gift-box {
+            font-size: 100px;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        /* Gizli Məktub */
+        #letter {
+            display: none;
+            position: absolute;
+            background: white;
+            padding: 40px;
+            width: 300px;
+            border-radius: 15px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            text-align: center;
+            border: 2px solid #ff4d6d;
+            animation: openLetter 1s forwards;
+            z-index: 150;
+        }
+
+        @keyframes openLetter {
+            from { transform: scale(0) rotate(-10deg); opacity: 0; }
+            to { transform: scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: #ff4d6d;
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .message {
+            color: #590d22;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 20px;
+        }
+
+        /* Güllərin Yağışı */
+        .flower {
+            position: absolute;
+            font-size: 30px;
+            pointer-events: none;
+            z-index: 50;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.2);
+            backdrop-filter: blur(5px);
+            z-index: 120;
+        }
     </style>
 </head>
 <body>
 
-    <div id="chat-container"></div>
+    <div class="box-container" id="gift" onclick="openGift()">
+        <div class="gift-box">🎁</div>
+        <p style="text-align:center; color:#ff4d6d; font-weight:bold;">Toxun, Ana!</p>
+    </div>
 
-    <div class="input-box">
-        <input type="text" id="m-input" placeholder="Mesaj yazın...">
-        <button onclick="send()">Gönder</button>
+    <div class="overlay" id="overlay"></div>
+
+    <div id="letter">
+        <h1>Canım Anam! ❤️</h1>
+        <div class="message">
+            Dünyanın ən gözəl, ən fədakar anası! 8 Mart bayramın mübarək. Həmişə gül ki, bizim dünyamız işıqlansın. Səni hər şeydən çox sevirəm! 🌹
+        </div>
+        <button onclick="location.reload()" style="margin-top:20px; border:none; background:#ff4d6d; color:white; padding:10px 20px; border-radius:20px; cursor:pointer;">Yenidən Bax ✨</button>
     </div>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
-        
-        const api = "https://chat-backend-7i5d.onrender.com";
-        const user = tg.initDataUnsafe.user || { id: 123, first_name: "Test" };
+        function openGift() {
+            document.getElementById('gift').style.display = 'none';
+            document.getElementById('letter').style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
 
-        // Girişdə istifadəçini bazaya qeyd et
-        fetch(`${api}/api/login`, {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({ userId: user.id, userName: user.first_name })
-        });
-
-        async function load() {
-            const r = await fetch(`${api}/api/messages`);
-            const msgs = await r.json();
-            const cont = document.getElementById('chat-container');
-            cont.innerHTML = msgs.map(m => `
-                <div class="msg ${m.userId === user.id ? 'my-msg' : ''}">
-                    <div class="user-name">${m.userName}</div>
-                    <div>${m.text}</div>
-                </div>
-            `).join('');
-            cont.scrollTop = cont.scrollHeight;
+            // Güllər yağsın
+            for (let i = 0; i < 60; i++) {
+                createFlower();
+            }
         }
 
-        async function send() {
-            const input = document.getElementById('m-input');
-            if(!input.value) return;
-            await fetch(`${api}/api/send`, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ userId: user.id, userName: user.first_name, text: input.value })
-            });
-            input.value = '';
-            load();
-        }
+        function createFlower() {
+            const flowers = ['🌹', '🌸', '🌷', '🌺', '✨', '❤️'];
+            const flower = document.createElement('div');
+            flower.classList.add('flower');
+            flower.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
+            
+            flower.style.left = Math.random() * 100 + 'vw';
+            flower.style.top = '-5vh';
+            
+            const duration = Math.random() * 3 + 2;
+            flower.style.animationDuration = duration + 's';
+            flower.style.opacity = Math.random();
+            
+            document.body.appendChild(flower);
 
-        setInterval(load, 2000);
-        load();
+            setTimeout(() => {
+                flower.remove();
+            }, duration * 1000);
+        }
     </script>
 </body>
 </html>
