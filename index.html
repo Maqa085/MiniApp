@@ -3,156 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElanımAz</title>
+    <title>ElanımAz | Professional Platforma</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
         
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); 
-            color: white;
-            min-height: 100vh;
-            margin: 0;
-            padding-bottom: 120px; 
-        }
-
-        /* Yenilənmiş Səhifə Paneli - Daha uzun və tünd */
-        .nav-container {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            display: flex;
-            justify-content: space-around; /* Düymələri bərabər yayır */
-            width: 90%; /* Paneli daha uzun etdik */
-            max-width: 500px; /* Maksimum genişlik limiti */
-            background-color: rgba(15, 23, 42, 0.9); /* Qapalı tünd mavi */
-            backdrop-filter: blur(15px);
-            padding: 10px;
-            border-radius: 9999px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-        }
-
-        .button {
-            --border_radius: 9999px;
-            --transtion: 0.3s ease-in-out;
-            cursor: pointer;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex: 1; /* Düymələrin hər biri bərabər yer tutur */
-            padding: 0.8rem 0.5rem;
-            background-color: transparent;
-            border: none;
-            border-radius: var(--border_radius);
-            transition: transform var(--transtion);
-        }
-
-        /* Sənin orijinal animasiya effektlərin */
-        .button::after {
-            content: ""; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 90%; height: 100%; background-color: hsla(260 97% 61% / 0.75);
-            background-image: radial-gradient(at 51% 89%, hsla(266, 45%, 74%, 1) 0px, transparent 50%);
-            opacity: var(--active, 0); border-radius: var(--border_radius);
-            transition: opacity var(--transtion); z-index: 2;
-        }
-
-        .button:is(:hover, :focus-visible, .active) { --active: 1; }
+        body { font-family: 'Poppins', sans-serif; background: #0f172a; color: white; padding-bottom: 110px; }
         
-        .button .dots_border {
-            --size_border: calc(100% + 2px); overflow: hidden; position: absolute;
-            top: 50%; left: 50%; transform: translate(-50%, -50%);
-            width: 100%; height: 100%;
-            border-radius: var(--border_radius); z-index: -1;
-            opacity: var(--active, 0);
-        }
-
-        .button .dots_border::before {
-            content: ""; position: absolute; top: 30%; left: 50%; transform: translate(-50%, -50%);
-            width: 100%; height: 2rem; background-color: white;
-            mask: linear-gradient(transparent 0%, white 120%);
-            animation: rotate 2s linear infinite;
-        }
-
-        @keyframes rotate { to { transform: rotate(360deg); } }
-
-        .button .text_button {
-            position: relative; z-index: 10; color: white;
-            font-size: 0.85rem; font-weight: 600;
-        }
-
-        .page { display: none; padding: 20px; animation: fadeIn 0.4s ease; }
+        /* Glassmorphism Dizayn */
+        .glass { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .nav-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 90%; max-width: 450px; z-index: 1000; border-radius: 40px; }
+        
+        /* Elan Kartları (2-2 düzülüş) */
+        .ads-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 10px; }
+        .ad-card { border-radius: 20px; overflow: hidden; transition: 0.3s; cursor: pointer; position: relative; }
+        .ad-card:active { transform: scale(0.95); }
+        .ad-card img { width: 100%; h-36; object-fit: cover; }
+        
+        /* Sehife kecidleri */
+        .page { display: none; animation: fadeIn 0.3s ease; }
         .page.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Modal Stil */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .modal-content { width: 100%; max-width: 400px; border-radius: 30px; padding: 25px; }
     </style>
 </head>
 <body>
 
-    <header class="py-12 text-center">
-        <h1 class="text-5xl font-extrabold tracking-tighter text-white drop-shadow-md">
-            ElanımAz
-        </h1>
-        <p class="text-blue-100 mt-2 opacity-80">Professional Elan Platforması</p>
+    <header class="p-5 flex justify-between items-center sticky top-0 bg-[#0f172a]/80 backdrop-blur-md z-50">
+        <h1 class="text-2xl font-extrabold tracking-tighter">ELANIM<span class="text-indigo-500">AZ</span></h1>
+        <button onclick="toggleModal('postModal')" class="bg-indigo-600 hover:bg-indigo-700 px-5 py-2 rounded-full text-xs font-bold shadow-lg shadow-indigo-500/30">+ ELAN</button>
     </header>
 
-    <main class="max-w-md mx-auto">
-        <div id="elanlar" class="page active">
-            <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
-                <h2 class="text-xl font-bold mb-4 text-center">🔥 Son Elanlar</h2>
-                <div class="space-y-4">
-                    <div class="bg-white/5 p-4 rounded-2xl border border-white/10 text-center">Yaxın zamanda burada elanlar görünəcək.</div>
+    <main>
+        <div id="page-elanlar" class="page active">
+            <div id="ads-container" class="ads-grid">
                 </div>
+        </div>
+
+        <div id="page-chat" class="page px-5">
+            <h2 class="text-xl font-bold mb-5">Mesajlar</h2>
+            <div id="chat-list" class="space-y-3 text-center opacity-50 text-sm py-20">
+                <p>Hələlik mesaj yoxdur.</p>
             </div>
         </div>
 
-        <div id="chat" class="page">
-            <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20">
-                <h2 class="text-xl font-bold mb-4 text-center">💬 Mesajlar</h2>
-                <p class="text-blue-100 text-center">Hələlik heç bir aktiv söhbət yoxdur.</p>
-            </div>
-        </div>
-
-        <div id="profil" class="page">
-            <div class="bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 text-center">
-                <div class="w-20 h-20 bg-indigo-600 rounded-full mx-auto mb-4 flex items-center justify-center text-2xl font-bold border-4 border-white/30">
-                    EA
-                </div>
-                <h2 class="text-xl font-bold mb-1">Mənim Profilim</h2>
-                <p class="text-blue-200 text-sm italic">Profil məlumatlarınız burada əks olunacaq.</p>
+        <div id="page-profil" class="page px-5">
+            <div class="glass p-8 rounded-[40px] text-center">
+                <div id="user-pfp" class="w-24 h-24 bg-indigo-500 rounded-full mx-auto mb-4 border-4 border-white/10 flex items-center justify-center text-3xl">👤</div>
+                <h2 id="user-display-name" class="text-xl font-bold mb-1">Qonaq</h2>
+                <p id="user-email" class="text-xs text-white/40 mb-6 italic">Giriş edilməyib</p>
+                <button id="auth-btn" class="w-full bg-white text-black py-4 rounded-2xl font-bold flex items-center justify-center gap-2">
+                    Google ilə Giriş
+                </button>
             </div>
         </div>
     </main>
 
-    <div class="nav-container">
-        <button id="btn-elanlar" class="button active" onclick="showPage('elanlar')">
-            <span class="dots_border"></span>
-            <span class="text_button">Elanlar</span>
-        </button>
-
-        <button id="btn-chat" class="button" onclick="showPage('chat')">
-            <span class="dots_border"></span>
-            <span class="text_button">Chat</span>
-        </button>
-
-        <button id="btn-profil" class="button" onclick="showPage('profil')">
-            <span class="dots_border"></span>
-            <span class="text_button">Profilim</span>
-        </button>
+    <div id="detailModal" class="modal" onclick="closeDetail(event)">
+        <div class="modal-content glass" onclick="event.stopPropagation()">
+            <img id="det-img" src="" class="w-full h-56 object-cover rounded-2xl mb-4">
+            <h2 id="det-title" class="text-2xl font-bold"></h2>
+            <p id="det-price" class="text-indigo-400 text-xl font-black mb-2"></p>
+            <p id="det-desc" class="text-white/70 text-sm mb-6"></p>
+            <button onclick="startChat()" class="w-full bg-indigo-600 py-4 rounded-2xl font-bold">Satıcıya yaz (Chat)</button>
+        </div>
     </div>
 
-    <script>
-        function showPage(pageId) {
+    <div id="postModal" class="modal">
+        <div class="modal-content glass">
+            <h2 class="text-xl font-bold mb-4">Yeni Elan Paylaş</h2>
+            <input type="text" id="p-title" placeholder="Başlıq" class="w-full bg-white/5 p-4 rounded-2xl mb-3 outline-none border border-white/10 focus:border-indigo-500">
+            <input type="number" id="p-price" placeholder="Qiymət (AZN)" class="w-full bg-white/5 p-4 rounded-2xl mb-3 outline-none border border-white/10">
+            <textarea id="p-desc" placeholder="Məhsul haqqında..." class="w-full bg-white/5 p-4 rounded-2xl mb-3 h-28 outline-none border border-white/10"></textarea>
+            <input type="text" id="p-img" placeholder="Şəkil URL (Məs: https://...)" class="w-full bg-white/5 p-4 rounded-2xl mb-5 outline-none border border-white/10 text-xs">
+            <div class="flex gap-2">
+                <button onclick="toggleModal('postModal')" class="flex-1 bg-white/5 py-4 rounded-2xl font-bold">Ləğv et</button>
+                <button onclick="submitAd()" class="flex-1 bg-indigo-600 py-4 rounded-2xl font-bold">Paylaş</button>
+            </div>
+        </div>
+    </div>
+
+    <nav class="nav-container glass flex justify-around p-2">
+        <button onclick="changePage('elanlar')" class="flex-1 py-3 text-[10px] font-bold tracking-widest uppercase opacity-40 hover:opacity-100">Elanlar</button>
+        <button onclick="changePage('chat')" class="flex-1 py-3 text-[10px] font-bold tracking-widest uppercase opacity-40 hover:opacity-100">Chat</button>
+        <button onclick="changePage('profil')" class="flex-1 py-3 text-[10px] font-bold tracking-widest uppercase opacity-40 hover:opacity-100">Profil</button>
+    </nav>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyArs4cKGTuTgFjztdMueDn5qurmmX_hJUs",
+            authDomain: "elan-9616a.firebaseapp.com",
+            projectId: "elan-9616a",
+            storageBucket: "elan-9616a.firebasestorage.app",
+            messagingSenderId: "382076476608",
+            appId: "1:382076476608:web:bc158becb22496ff066125"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // -- QEYDİYYAT SİSTEMİ --
+        const authBtn = document.getElementById('auth-btn');
+        authBtn.onclick = () => {
+            const provider = new GoogleAuthProvider();
+            signInWithPopup(auth, provider);
+        };
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('user-display-name').innerText = user.displayName;
+                document.getElementById('user-email').innerText = user.email;
+                document.getElementById('user-pfp').innerHTML = `<img src="${user.photoURL}" class="rounded-full">`;
+                authBtn.innerText = "Hesabdan Çıx";
+                authBtn.onclick = () => auth.signOut();
+            } else {
+                document.getElementById('user-display-name').innerText = "Qonaq";
+                document.getElementById('user-pfp').innerText = "👤";
+                authBtn.innerText = "Google ilə Giriş";
+            }
+        });
+
+        // -- ELANLARI ÇƏKMƏK --
+        const adsContainer = document.getElementById('ads-container');
+        onSnapshot(query(collection(db, "ads"), orderBy("createdAt", "desc")), (snap) => {
+            adsContainer.innerHTML = "";
+            snap.forEach(doc => {
+                const data = doc.data();
+                const card = document.createElement('div');
+                card.className = "ad-card glass shadow-2xl";
+                card.onclick = () => openDetail(data);
+                card.innerHTML = `
+                    <img src="${data.image || 'https://via.placeholder.com/200'}">
+                    <div class="p-3">
+                        <p class="text-xs opacity-50 truncate">${data.title}</p>
+                        <p class="text-sm font-black text-indigo-400">${data.price} AZN</p>
+                    </div>
+                `;
+                adsContainer.appendChild(card);
+            });
+        });
+
+        // -- ELAN PAYLAŞMAQ --
+        window.submitAd = async () => {
+            if (!auth.currentUser) return alert("Əvvəlcə giriş edin!");
+            const title = document.getElementById('p-title').value;
+            const price = document.getElementById('p-price').value;
+            const desc = document.getElementById('p-desc').value;
+            const img = document.getElementById('p-img').value;
+
+            if(!title || !price) return alert("Məlumatları tam doldurun!");
+
+            await addDoc(collection(db, "ads"), {
+                title, price, desc, image: img,
+                userId: auth.currentUser.uid,
+                createdAt: serverTimestamp()
+            });
+            toggleModal('postModal');
+        };
+
+        // UI FUNKSİYALARI
+        window.changePage = (id) => {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById('page-'+id).classList.add('active');
+        };
 
-            document.querySelectorAll('.button').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn-' + pageId).classList.add('active');
-        }
+        window.toggleModal = (id) => {
+            const m = document.getElementById(id);
+            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
+        };
+
+        window.openDetail = (data) => {
+            document.getElementById('det-img').src = data.image || '';
+            document.getElementById('det-title').innerText = data.title;
+            document.getElementById('det-price').innerText = data.price + " AZN";
+            document.getElementById('det-desc').innerText = data.desc;
+            toggleModal('detailModal');
+        };
+
+        window.closeDetail = (e) => toggleModal('detailModal');
+        window.startChat = () => { changePage('chat'); toggleModal('detailModal'); };
+
     </script>
-
 </body>
-</html>
+            </html>
+    
