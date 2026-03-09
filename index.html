@@ -3,109 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElanımAz | Professional</title>
+    <title>ElanımAz - Azərbaycanın Elan Platforması</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
         
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            background: radial-gradient(circle at top, #1e3a8a 0%, #0f172a 100%); 
-            color: white; 
-            padding-bottom: 110px;
-            min-height: 100vh;
+        :root {
+            --bg-dark: #020617;
+            --card-bg: #0f172a;
+            --accent-blue: #2563eb;
         }
 
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .nav-container { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; z-index: 1000; border-radius: 30px; }
-        
-        .ads-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 15px; }
-        .ad-card { border-radius: 24px; overflow: hidden; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: pointer; }
-        .ad-card:hover { transform: translateY(-5px); border-color: #3b82f6; box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2); }
-        .ad-card img { width: 100%; height: 160px; object-fit: cover; }
-        
-        .page { display: none; animation: slideUp 0.4s ease-out; }
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(circle at 50% -20%, #1e40af 0%, #020617 80%);
+            color: #f8fafc;
+            min-height: 100vh;
+            padding-bottom: 120px;
+        }
+
+        /* 2-2 Grid Sistemi və Kartlar */
+        .ads-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding: 12px;
+        }
+
+        .ad-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .ad-card:active { transform: scale(0.97); }
+
+        .ad-image {
+            width: 100%;
+            aspect-ratio: 1 / 1; /* Kvadrat görünüş */
+            object-fit: cover;
+            background: #1e293b;
+        }
+
+        .ad-info { padding: 10px; flex-grow: 1; }
+        .ad-title { font-size: 0.85rem; font-weight: 600; color: #cbd5e1; height: 2.4rem; overflow: hidden; }
+        .ad-price { font-size: 1.1rem; font-weight: 800; color: #60a5fa; margin-top: 4px; }
+
+        .btn-contact {
+            background: var(--accent-blue);
+            color: white;
+            text-align: center;
+            padding: 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-top: 8px;
+            display: block;
+            transition: opacity 0.2s;
+        }
+
+        /* Naviqasiya Paneli */
+        .bottom-nav {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            width: 92%; max-width: 400px; background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px); border-radius: 24px;
+            display: flex; justify-content: space-around; padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1); z-index: 1000;
+        }
+
+        .nav-item { opacity: 0.4; transition: 0.3s; cursor: pointer; text-align: center; }
+        .nav-item.active { opacity: 1; color: #3b82f6; }
+
+        /* Səhifə Keçidləri */
+        .page { display: none; padding-top: 20px; animation: pageIn 0.3s ease-out; }
         .page.active { display: block; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pageIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
-        input, textarea { background: rgba(255,255,255,0.05) !important; border: 1px solid rgba(255,255,255,0.1) !important; color: white !important; outline: none; transition: 0.3s; }
-        input:focus { border-color: #3b82f6 !important; background: rgba(255,255,255,0.1) !important; }
-
-        .tg-input { border-radius: 18px; padding: 15px; width: 100%; margin-bottom: 12px; }
+        /* Modal */
+        .full-modal {
+            display: none; position: fixed; inset: 0; background: var(--bg-dark);
+            z-index: 2000; overflow-y: auto; padding: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <header class="p-6 text-center">
-        <h1 class="text-3xl font-extrabold tracking-tighter">ELANIM<span class="text-blue-500">AZ</span></h1>
-        <p class="text-blue-300/60 text-xs mt-1 uppercase tracking-widest">Premium Elan Platforması</p>
+    <header class="p-6">
+        <h1 class="text-3xl font-black tracking-tighter">ELANIM<span class="text-blue-600">AZ</span></h1>
+        <div class="h-1 w-12 bg-blue-600 rounded-full mt-1"></div>
     </header>
 
-    <main>
-        <div id="page-elanlar" class="page active">
-            <div id="ads-container" class="ads-grid">
-                </div>
-        </div>
-
-        <div id="page-chat" class="page px-6 py-10 text-center">
-            <div class="glass p-10 rounded-[30px]">
-                <div class="text-5xl mb-4">💬</div>
-                <h2 class="text-xl font-bold">Mesajlar</h2>
-                <p class="text-white/40 text-sm mt-2">Hələlik heç bir aktiv söhbət tapılmadı.</p>
+    <div id="elanlar-page" class="page active">
+        <div class="ads-grid" id="ads-list">
             </div>
-        </div>
+    </div>
 
-        <div id="page-profil" class="page px-6">
-            <div class="glass p-8 rounded-[35px] text-center relative overflow-hidden">
-                <div class="absolute top-0 left-0 w-full h-1 bg-blue-500"></div>
-                <div class="w-24 h-24 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl shadow-xl border-4 border-white/5">👤</div>
-                
-                <input type="text" id="tg-username" placeholder="@telegram_adiniz" class="tg-input text-center font-bold" onchange="saveProfile()">
-                <p class="text-[10px] text-blue-400 uppercase tracking-tighter mb-6">Telegram profilinizlə əlaqələndirilir</p>
-
-                <div class="grid grid-cols-2 gap-3 mb-6">
-                    <div class="glass p-4 rounded-2xl">
-                        <p class="text-[10px] opacity-50 uppercase">Elanlarım</p>
-                        <span class="text-xl font-bold">0</span>
-                    </div>
-                    <div class="glass p-4 rounded-2xl">
-                        <p class="text-[10px] opacity-50 uppercase">Aktiv</p>
-                        <span class="text-xl font-bold">Bəli</span>
-                    </div>
-                </div>
-
-                <button onclick="toggleModal('postModal')" class="w-full bg-blue-600 hover:bg-blue-500 py-4 rounded-2xl font-bold shadow-lg shadow-blue-600/20 transition-all active:scale-95">
-                    🚀 Yeni Elan Yerləşdir
-                </button>
-            </div>
-        </div>
-    </main>
-
-    <div id="postModal" class="modal">
-        <div class="glass w-full max-w-md p-8 rounded-[40px]">
-            <h2 class="text-2xl font-black mb-6">Elan Detalları</h2>
-            
-            <input type="text" id="p-title" placeholder="Nə satırsınız?" class="tg-input">
-            <input type="number" id="p-price" placeholder="Qiymət (AZN)" class="tg-input">
-            <textarea id="p-desc" placeholder="Məhsul haqqında qısa məlumat..." class="tg-input h-32"></textarea>
-            
-            <input type="file" id="p-file" class="hidden" accept="image/*" onchange="handleImage(event)">
-            <label for="p-file" id="file-label" class="block w-full p-4 border-2 border-dashed border-blue-500/30 rounded-2xl text-center mb-6 cursor-pointer hover:bg-blue-500/10 transition-all text-sm text-blue-300">
-                🖼️ Şəkil Seç (Maks. 1MB)
-            </label>
-
-            <div class="flex gap-3">
-                <button onclick="toggleModal('postModal')" class="flex-1 bg-white/5 py-4 rounded-2xl font-bold">Geri</button>
-                <button onclick="submitAd()" class="flex-1 bg-blue-600 py-4 rounded-2xl font-bold shadow-lg shadow-blue-600/40">Paylaş</button>
+    <div id="chat-page" class="page px-4">
+        <h2 class="text-2xl font-bold mb-6">Mesajlarım</h2>
+        <div id="active-chats" class="space-y-4">
+            <div class="bg-slate-900/50 p-6 rounded-2xl border border-white/5 text-center opacity-50">
+                Aktiv mesajınız yoxdur.
             </div>
         </div>
     </div>
 
-    <nav class="nav-container glass flex justify-around p-2 shadow-2xl">
-        <button onclick="changePage('elanlar')" class="flex-1 py-4 text-[10px] font-bold tracking-widest uppercase opacity-40 hover:opacity-100 transition-all">Elanlar</button>
-        <button onclick="changePage('chat')" class="flex-1 py-4 text-[10px] font-bold tracking-widest uppercase opacity-40 hover:opacity-100 transition-all">Chat</button>
-        <button onclick="changePage('profil')" class="flex-1 py-4 text-[10px] font-bold tracking-widest uppercase opacity-40 hover:opacity-100 transition-all">Profil</button>
+    <div id="profil-page" class="page px-4">
+        <div class="bg-slate-900 p-6 rounded-[32px] border border-white/5 mb-6">
+            <div class="flex items-center gap-4 mb-6">
+                <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center text-2xl">👤</div>
+                <div>
+                    <input type="text" id="user-tg" placeholder="@telegram_adiniz" class="bg-transparent border-b border-white/20 outline-none font-bold text-lg w-full">
+                    <p class="text-xs text-blue-400">Telegram Profiliniz</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3 mb-6">
+                <div class="bg-white/5 p-4 rounded-2xl text-center">
+                    <p class="text-[10px] uppercase opacity-50">Elanlarım</p>
+                    <span id="my-ads-count" class="text-xl font-bold">0</span>
+                </div>
+                <div class="bg-white/5 p-4 rounded-2xl text-center">
+                    <p class="text-[10px] uppercase opacity-50">Görülmə</p>
+                    <span class="text-xl font-bold">0</span>
+                </div>
+            </div>
+
+            <button onclick="openModal('addAdModal')" class="w-full bg-blue-600 py-4 rounded-2xl font-extrabold text-sm uppercase tracking-widest shadow-lg shadow-blue-600/20">
+                + YENİ ELAN ƏLAVƏ ET
+            </button>
+        </div>
+    </div>
+
+    <div id="addAdModal" class="full-modal">
+        <div class="flex justify-between items-center mb-8">
+            <h2 class="text-2xl font-bold">Yeni Elan</h2>
+            <button onclick="closeModal('addAdModal')" class="text-gray-400">Bağla</button>
+        </div>
+        
+        <div class="space-y-4">
+            <div class="bg-slate-900 p-4 rounded-2xl">
+                <label class="text-xs text-gray-500 block mb-2 uppercase font-bold">Məhsulun Şəkli</label>
+                <input type="file" id="file-input" class="hidden" accept="image/*" onchange="handleFile(event)">
+                <div onclick="document.getElementById('file-input').click()" id="preview-box" class="w-full aspect-square bg-white/5 border-2 border-dashed border-white/10 rounded-2xl flex items-center justify-center cursor-pointer overflow-hidden">
+                    <span id="preview-text">📸 Şəkil seçin</span>
+                </div>
+            </div>
+
+            <input type="text" id="ad-title" placeholder="Elan başlığı" class="w-full bg-slate-900 p-4 rounded-2xl outline-none border border-white/5 focus:border-blue-600">
+            <input type="number" id="ad-price" placeholder="Qiymət (AZN)" class="w-full bg-slate-900 p-4 rounded-2xl outline-none border border-white/5 focus:border-blue-600">
+            <textarea id="ad-desc" placeholder="Ətraflı məlumat..." class="w-full bg-slate-900 p-4 rounded-2xl outline-none border border-white/5 focus:border-blue-600 h-32"></textarea>
+            
+            <button onclick="uploadAd()" class="w-full bg-blue-600 py-5 rounded-2xl font-black shadow-xl shadow-blue-600/30">PAYLAŞ</button>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="switchPage('elanlar')">
+            <p class="text-[10px] font-bold">ELANLAR</p>
+        </div>
+        <div class="nav-item" onclick="switchPage('chat')">
+            <p class="text-[10px] font-bold">CHAT</p>
+        </div>
+        <div class="nav-item" onclick="switchPage('profil')">
+            <p class="text-[10px] font-bold">PROFİLİM</p>
+        </div>
     </nav>
 
     <script type="module">
@@ -123,81 +189,66 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        let selectedImageBase64 = "";
+        let currentImg = "";
 
-        // Profil Yadda Saxla
-        window.saveProfile = () => {
-            const user = document.getElementById('tg-username').value;
-            localStorage.setItem('elan_tg_user', user);
+        // Səhifə idarəetməsi
+        window.switchPage = (p) => {
+            document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById(p+'-page').classList.add('active');
+            event.currentTarget.classList.add('active');
         };
 
-        window.onload = () => {
-            const saved = localStorage.getItem('elan_tg_user');
-            if(saved) document.getElementById('tg-username').value = saved;
-        };
+        window.openModal = (id) => document.getElementById(id).style.display = 'block';
+        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
 
-        // Şəkil emalı
-        window.handleImage = (e) => {
-            const file = e.target.files[0];
+        // Şəkil oxuma
+        window.handleFile = (e) => {
             const reader = new FileReader();
             reader.onload = () => {
-                selectedImageBase64 = reader.result;
-                document.getElementById('file-label').innerText = "✅ Şəkil seçildi: " + file.name;
-                document.getElementById('file-label').style.borderColor = "#22c55e";
+                currentImg = reader.result;
+                document.getElementById('preview-box').innerHTML = `<img src="${currentImg}" class="w-full h-full object-cover">`;
             };
-            reader.readAsDataURL(file);
+            reader.readAsDataURL(e.target.files[0]);
         };
 
-        // Elanları Çəkmək
+        // Elan paylaşmaq
+        window.uploadAd = async () => {
+            const title = document.getElementById('ad-title').value;
+            const price = document.getElementById('ad-price').value;
+            const desc = document.getElementById('ad-desc').value;
+            const tg = document.getElementById('user-tg').value;
+
+            if(!title || !price || !currentImg || !tg) return alert("Bütün xanaları doldurun!");
+
+            await addDoc(collection(db, "ads"), {
+                title, price, desc, image: currentImg, tg: tg,
+                createdAt: serverTimestamp()
+            });
+
+            alert("Elan paylaşıldı!");
+            closeModal('addAdModal');
+        };
+
+        // Elanları gətirmək (2-2 Grid)
         onSnapshot(query(collection(db, "ads"), orderBy("createdAt", "desc")), (snap) => {
-            const container = document.getElementById('ads-container');
-            container.innerHTML = "";
+            const list = document.getElementById('ads-list');
+            list.innerHTML = "";
             snap.forEach(doc => {
                 const data = doc.data();
-                container.innerHTML += `
-                    <div class="ad-card glass shadow-lg">
-                        <img src="${data.image || 'https://via.placeholder.com/200'}">
-                        <div class="p-4">
-                            <p class="text-[10px] opacity-40 uppercase truncate">${data.title}</p>
-                            <p class="text-blue-400 font-black text-lg">${data.price} AZN</p>
-                            <a href="https://t.me/${data.tgUser.replace('@','')}" class="text-[9px] text-white/30 hover:text-blue-400">@${data.tgUser}</a>
+                list.innerHTML += `
+                    <div class="ad-card">
+                        <img src="${data.image}" class="ad-image">
+                        <div class="ad-info">
+                            <h3 class="ad-title">${data.title}</h3>
+                            <p class="ad-price">${data.price} AZN</p>
+                            <a href="https://t.me/${data.tg.replace('@','')}" class="btn-contact">ƏLAQƏ SAXLA</a>
                         </div>
                     </div>
                 `;
             });
         });
 
-        // Elan Paylaşmaq
-        window.submitAd = async () => {
-            const title = document.getElementById('p-title').value;
-            const price = document.getElementById('p-price').value;
-            const desc = document.getElementById('p-desc').value;
-            const tgUser = document.getElementById('tg-username').value;
-
-            if(!title || !price || !tgUser) return alert("Başlıq, Qiymət və Telegram adınızı yazın!");
-            if(!selectedImageBase64) return alert("Zəhmət olmasa şəkil seçin!");
-
-            await addDoc(collection(db, "ads"), {
-                title, price, desc, image: selectedImageBase64,
-                tgUser: tgUser,
-                createdAt: serverTimestamp()
-            });
-
-            toggleModal('postModal');
-            alert("Elan paylaşıldı!");
-        };
-
-        // Naviqasiya
-        window.changePage = (id) => {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById('page-'+id).classList.add('active');
-        };
-
-        window.toggleModal = (id) => {
-            const m = document.getElementById(id);
-            m.style.display = m.style.display === 'flex' ? 'none' : 'flex';
-        };
     </script>
 </body>
-                    </html>
-                    
+</html>
